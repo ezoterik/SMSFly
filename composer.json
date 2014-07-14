@@ -1,0 +1,11 @@
+{
+	"name": "ch1z1craft/SMSFly",
+	"description": "Send SMS by http://sms-fly.com/",
+	"keywords": ["sms", "fly", "smsfly"],
+	"homepage": "https://github.com/ch1z1craft/SMSFly",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.3.0",
+		"lib-libxml" : "*"
+	}
+}
