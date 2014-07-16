@@ -33,8 +33,8 @@ class SMSFly {
 	public function sendSMS($recipient, $text, $description, $startTime = 'AUTO', $endTime = 'AUTO', $livetime = 4, $rate = 120) {
 		$result = false;
 
-		$text = iconv('windows-1251', 'utf-8', htmlspecialchars($text));
-		$description = iconv('windows-1251', 'utf-8', htmlspecialchars($description));
+		$text = htmlspecialchars($text);
+		$description = htmlspecialchars($description);
 
 		$xml = new XMLWriter();
 		$xml->openMemory();
