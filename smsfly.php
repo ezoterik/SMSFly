@@ -70,11 +70,15 @@ class SMSFly {
 		$response = curl_exec($ch);
 		curl_close($ch);
 
-		$simpleXml = new SimpleXMLElement($response);
-		if ($simpleXml->state['code'] == 'ACCEPT') {
-			$result = $simpleXml->state['campaignID'];
-		} else {
-			$this->_error = $simpleXml->state[0];
+		try {
+			$simpleXml = new SimpleXMLElement($response);
+			if ($simpleXml->state['code'] == 'ACCEPT') {
+				$result = $simpleXml->state['campaignID'];
+			} else {
+				$this->_error = $simpleXml->state[0];
+			}
+		} catch (Exception $ex) {
+			$this->_error = $response;
 		}
 
 		return $result;
