@@ -85,6 +85,50 @@ class SMSFly {
 	}
 
 /**
+ * Функция получения баланса счета
+ *
+ * @return float
+ */
+	public function getBalance() {
+		$result = false;
+
+		$xml = new XMLWriter();
+		$xml->openMemory();
+		$xml->setIndent(true);
+		$xml->startDocument('1.0', 'UTF-8');
+		$xml->startElement('request');
+		$xml->writeElement('operation', 'GETBALANCE');
+		$xml->endElement();
+		$xml->endDocument();
+
+		$xml = $xml->outputMemory();
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_USERPWD, $this->_login . ':' . $this->_password);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_URL, $this->_server);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: text/xml", "Accept: text/xml"));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
+		$response = curl_exec($ch);
+		curl_close($ch);
+
+		try {
+			$simpleXml = new SimpleXMLElement($response);
+			if (isset($simpleXml->balance)) {
+				$result = floatval($simpleXml->balance);
+			} else {
+				$this->_error = 'Не удалось получить баланс';
+			}
+		} catch (Exception $ex) {
+			$this->_error = $response;
+		}
+
+		return $result;
+	}
+
+/**
  * @return array
  */
 	public function getError() {
