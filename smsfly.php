@@ -70,16 +70,21 @@ class SMSFly {
 		$response = curl_exec($ch);
 		curl_close($ch);
 
+		$oldUseErrors = libxml_use_internal_errors(true);
+
 		try {
 			$simpleXml = new SimpleXMLElement($response);
 			if ($simpleXml->state['code'] == 'ACCEPT') {
 				$result = $simpleXml->state['campaignID'];
 			} else {
-				$this->_error = $simpleXml->state[0];
+				$this->_error[] = $simpleXml->state[0];
 			}
 		} catch (Exception $ex) {
-			$this->_error = $response;
+			$this->_error[] = $ex->getMessage();
+			libxml_clear_errors();
 		}
+
+		libxml_use_internal_errors($oldUseErrors);
 
 		return $result;
 	}
@@ -114,16 +119,21 @@ class SMSFly {
 		$response = curl_exec($ch);
 		curl_close($ch);
 
+		$oldUseErrors = libxml_use_internal_errors(true);
+
 		try {
 			$simpleXml = new SimpleXMLElement($response);
 			if (isset($simpleXml->balance)) {
 				$result = floatval($simpleXml->balance);
 			} else {
-				$this->_error = 'Не удалось получить баланс';
+				$this->_error[] = 'Не удалось получить баланс';
 			}
 		} catch (Exception $ex) {
-			$this->_error = $response;
+			$this->_error[] = $ex->getMessage();
+			libxml_clear_errors();
 		}
+
+		libxml_use_internal_errors($oldUseErrors);
 
 		return $result;
 	}
